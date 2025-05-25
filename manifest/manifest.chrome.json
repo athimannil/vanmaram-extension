@@ -1,0 +1,33 @@
+{
+  "name": "Malayalam Dictionary",
+  "description": "A browser extension for Vanmaram Dictionary",
+  "version": "3.0.0",
+  "manifest_version": 3,
+  "author": {
+    "name": "Muhammed Athimannil",
+    "url": "https://www.athimannil.com"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "homepage_url": "https://www.vanmaram.com",
+  "host_permissions": [
+    "https://vanmaram.com/*",
+    "http://localhost:3000/*",
+    "https://beta.vanmaram.com/api/"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Malayalam Dictionary",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  }
+}

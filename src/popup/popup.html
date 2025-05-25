@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Vanmaram English Malayalam Dictionary</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body class="container">
+    <div class="logo">
+      <img src="/home-logo.png" alt="vanmaram logo" />
+    </div>
+    <div class="search">
+      <form id="search-form" class="search-form">
+        <input
+          type="search"
+          id="search-input"
+          autocomplete="off"
+          placeholder=""
+        />
+        <input type="submit" value="Search" />
+      </form>
+    </div>
+    <div class="result">
+      <ul id="search-result" class="search-result">
+        <!-- Search results will be populated here -->
+      </ul>
+      <ul class="search-suggestions">
+        <!-- Search suggestions will appear here -->
+      </ul>
+    </div>
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>
