@@ -1,22 +1,77 @@
+interface ImportMetaEnv {
+  readonly VITE_API_URL?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('search-form') as HTMLFormElement;
   const input = document.getElementById('search-input') as HTMLInputElement;
   const results = document.getElementById('search-result') as HTMLUListElement;
 
+  const API_URL =
+    import.meta.env.VITE_API_URL || 'https://beta.vanmaram.com/api';
+
+  function clearResults() {
+    while (results.firstChild) {
+      results.removeChild(results.firstChild);
+    }
+  }
+
+  function createListItem(
+    text: string,
+    isLink = false,
+    href = ''
+  ): HTMLLIElement {
+    const li = document.createElement('li');
+    if (isLink) {
+      const a = document.createElement('a');
+      a.textContent = text;
+      a.href = href;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      li.appendChild(a);
+    } else {
+      li.textContent = text;
+    }
+    return li;
+  }
+
+  function displayResults(meanings: string[], sourceUrl?: string) {
+    clearResults();
+
+    meanings.forEach((meaning) => {
+      results.appendChild(createListItem(meaning));
+    });
+
+    if (sourceUrl) {
+      results.appendChild(createListItem('കൂടുതല്‍ >>', true, sourceUrl));
+    }
+  }
+
+  function displayError(message: string) {
+    clearResults();
+    results.appendChild(createListItem(`Error: ${message}`));
+  }
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const query = input.value.trim();
+
     if (!query) {
-      results.innerHTML = '<li>Please enter a search term.</li>';
+      clearResults();
+      results.appendChild(createListItem('Please enter a search term.'));
       return;
     }
+
     const isEnglish = /^[a-zA-Z0-9\s]+$/.test(query);
 
     try {
       const response = await fetch(
-        `https://beta.vanmaram.com/api/meaning/${isEnglish ? 'en' : 'ml'}/${encodeURIComponent(query)}`
+        `${API_URL}/meaning/${isEnglish ? 'en' : 'ml'}/${encodeURIComponent(query)}`
       );
-      console.log(response);
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -27,13 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await response.json();
-
-      results.innerHTML = [
-        ...data.meaning.map((meaning: string) => `<li>${meaning}</li>`),
-        `<li><a href="${data.source}" target="_blank" rel="noopener noreferrer">കൂടുതല്‍ &gt;&gt;</a></li>`,
-      ].join('');
+      displayResults(data.meaning, data.source);
     } catch (error: any) {
-      results.innerHTML = `<li>Error: ${error.message}</li>`;
+      displayError(error.message);
     }
   });
 });
